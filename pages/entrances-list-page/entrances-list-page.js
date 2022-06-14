@@ -1,11 +1,15 @@
+import template from './entrances-list-page.template.js'
+
 export class EntrancesListPage {
     constructor($) {
-        $('.toast').toast({
+        this.templateFileName = template
+
+        /* $('.toast').toast({
             animation: true,
             autohide: true,
             delay: 3000
         })
         
-        $('.toast').toast('show')
+        $('.toast').toast('show') */
     }
 }
