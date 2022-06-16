@@ -1,4 +1,4 @@
-export default ` 
+export default /*css*/` 
     .toast {
         position: absolute;
 

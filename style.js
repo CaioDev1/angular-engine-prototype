@@ -1,4 +1,4 @@
-export default () => `
+export default () => /*css*/`
     * {
         padding: 0;
         margin: 0;
@@ -12,18 +12,18 @@ export default () => `
         justify-content: center;
         align-items: center;
 
-        width: 100vw;
-        height: 100vh;
-
         text-align: center;
 
         background-color: #0093E9;
         background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
-
     }
 
     h1, td, th {
         color: white;
+    }
+    
+    a {
+        cursor: pointer;
     }
 
     input, select, button {
@@ -33,5 +33,6 @@ export default () => `
 
     main {
         width: 70%;
+        min-height: 100vh;
     }
 `

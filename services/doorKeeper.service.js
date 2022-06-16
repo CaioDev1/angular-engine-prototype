@@ -8,7 +8,7 @@ class Entrances {
        return this.entrances
     }
 
-    save(newEntrance) {
+    add(newEntrance) {
         this.entrances.push(newEntrance)
     }
 
@@ -31,7 +31,7 @@ class Exits {
        return this.exits
     }
 
-    save(newExit) {
+    add(newExit) {
         this.exits.push(newExit)
     }
 
@@ -54,7 +54,7 @@ class Visitors {
        return this.visitors
     }
 
-    save(newVisitor) {
+    add(newVisitor) {
         this.visitors.push(newVisitor)
     }
 
@@ -66,4 +66,3 @@ class Visitors {
         
     }
 }
-

@@ -1,12 +1,14 @@
-export default `
+export default /*html*/`
+    <app-navbar></app-navbar>
     <h1>HOME - PORTARIA</h1>
-    <a href="/form" class="btn btn-lg btn-warning col-3">Novo</a>
+    <button routeLink="/form" class="btn btn-lg btn-warning col-3 my-3">Nova entrada</button>
     <table class="table">
         <thead>
             <th scope="col">Id</th>
             <th scope="col">Motivo</th>
             <th scope="col">Data de entrada</th>
             <th scope="col">Previsão de saída</th>
+            <th scope="col">Opções</th>
         </thead>
         <tr>
             <td scope='row'>sdfsdfsd</td>
@@ -14,7 +16,8 @@ export default `
             <td>sdfsdfsd</td>
             <td>sdfsdfsd</td>
             <td>
-                <a href="/form" routeLink class="btn-sm btn-outline-success">EDITAR</a> | <a href="entrance/delete" class="btn-sm btn-outline-danger">DELETAR</a>
+                <button routeLink="/form" class="btn btn-sm btn-success">EDITAR</button> | 
+                <button class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
             </td>
         </tr>
     </table>

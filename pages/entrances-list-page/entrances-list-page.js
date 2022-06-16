@@ -1,15 +1,20 @@
 import template from './entrances-list-page.template.js'
 
-export class EntrancesListPage {
-    constructor($) {
-        this.templateFileName = template
+class EntrancesListPage extends HTMLElement {
+    constructor() {        
+        super()
 
-        /* $('.toast').toast({
-            animation: true,
-            autohide: true,
-            delay: 3000
-        })
-        
-        $('.toast').toast('show') */
+        this.innerHTML = template
+
+        EntrancesListPage.instance = this
     }
+
+    static getInstance() {
+        return EntrancesListPage.instance
+    }
+}
+
+export default {
+    selectorName: 'entrances-list-page',
+    component: EntrancesListPage
 }
