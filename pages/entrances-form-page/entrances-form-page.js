@@ -60,11 +60,14 @@ const EntrancesFormPage = (bootstrap, services) => {
     
                         services.Entrances.add(newEntranceData)
                     } else {
-                        //services.Visitors.list = services.Visitors.list.map(visitor => {}) 
-
                         services.Entrances.list = services.Entrances.list.map(entrance => {
                             if(entrance.id == entranceId) {
                                 entrance = newEntranceData
+
+                                services.Visitors.list = services.Visitors.list.map(visitor => {
+                                    if(visitor.visitor_id == entrande.entrance_visitor_id)
+                                        visitor = newVisitorData
+                                })
                             }
                         }) 
                     }

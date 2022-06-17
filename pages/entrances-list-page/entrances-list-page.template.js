@@ -21,7 +21,7 @@ export default (entrances) => /*html*/`
                     <td>${entrance.entrance_end_prevision}</td>
                     <td>
                         <button routeLink="/form?entrance_id=${entrance.id}" class="btn btn-sm btn-success">EDITAR</button> | 
-                        <button class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
+                        <button removeButton="${entrance.id}" class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
                     </td>
                 </tr>`
             })

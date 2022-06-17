@@ -10,9 +10,17 @@ const EntrancesListPage = (bootstrap, injectedServices) => {
     
                 this.innerHTML = template(services.Entrances.list)
 
-                EntrancesListPageComponent.instance = this
+                this.querySelector('[removeButton]') && this.querySelector('[removeButton]').addEventListener('click', e => {
+                    const entranceToRemoveIndex = services.Entrances.list.findIndex(entrance => entrance.id == e.target.getAttribute('removeButton'))
+                
+                    if(entranceToRemoveIndex != -1) {
+                        services.Entrances.list.splice(entranceToRemoveIndex, 1)
+                    
+                        this.innerHTML = template(services.Entrances.list)
+                    }
+                })
 
-                console.log(services)
+                EntrancesListPageComponent.instance = this
             }
     
             static getInstance() {
@@ -21,6 +29,10 @@ const EntrancesListPage = (bootstrap, injectedServices) => {
     
             static get selectorName() {
                 return COMPONENT_SELECTOR
+            }
+
+            triggerRefresh() {
+                this.innerHTML = template(services.Entrances.list)
             }
         }
 
