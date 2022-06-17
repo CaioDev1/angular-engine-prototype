@@ -1,20 +1,35 @@
 import template from './entrances-list-page.template.js'
 
-class EntrancesListPage extends HTMLElement {
-    constructor() {        
-        super()
+const COMPONENT_SELECTOR = 'entrances-list-page'
 
-        this.innerHTML = template
+const EntrancesListPage = (bootstrap, injectedServices) => {
+    if(bootstrap) {
+        const EntrancesListPageComponent = class extends HTMLElement {
+            constructor(services=injectedServices) {
+                super()
+    
+                this.innerHTML = template(services.Entrances.list)
 
-        EntrancesListPage.instance = this
+                EntrancesListPageComponent.instance = this
+
+                console.log(services)
+            }
+    
+            static getInstance() {
+                return EntrancesListPageComponent.instance
+            }
+    
+            static get selectorName() {
+                return COMPONENT_SELECTOR
+            }
+        }
+
+        customElements.define(EntrancesListPageComponent.selectorName, EntrancesListPageComponent);
+    
+        return EntrancesListPageComponent
     }
 
-    static getInstance() {
-        return EntrancesListPage.instance
-    }
+    return customElements.get(COMPONENT_SELECTOR) 
 }
 
-export default {
-    selectorName: 'entrances-list-page',
-    component: EntrancesListPage
-}
+export default EntrancesListPage

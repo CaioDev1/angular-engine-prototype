@@ -5,4 +5,8 @@ export default /*css*/`
         top: 50px;
         right: 50px;
     }
+
+    td {
+        vertical-align: middle;
+    }
 `

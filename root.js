@@ -1,15 +1,20 @@
 // DEFAULT STYLE
 import defaultStyle from './style.js'
 
+// COMPONENTS
 import EntrancesListPage from './pages/entrances-list-page/entrances-list-page.js'
 import EntrancesFormPage from './pages/entrances-form-page/entrances-form-page.js'
 import VisitorsListPage from './pages/visitors-list-page/visitor-list-page.js'
 import NavBar from './components/navbar/app-navbar.js'
 
+// SERVICES
+import {Entrances, Exits, Visitors} from './services/doorKeeper.service.js'
+import Router from './services/router.service.js'
+
 const routes = [
-    {path: '/', renderComponent: EntrancesListPage.component},
-    {path: '/form', renderComponent: EntrancesFormPage.component},
-    {path: '/visitors', renderComponent: VisitorsListPage.component},
+    {path: '/', renderComponent: EntrancesListPage},
+    {path: '/form', renderComponent: EntrancesFormPage},
+    {path: '/visitors', renderComponent: VisitorsListPage},
 ]
 
 const applicationDeclarations = [
@@ -19,7 +24,17 @@ const applicationDeclarations = [
     NavBar
 ]
 
-const appComponentInstances = {}
+const applicationServices = [
+    Entrances,
+    Exits,
+    Visitors,
+    Router
+]
+
+const appInstances = {
+    components: {},
+    services: {}
+}
 
 function loadDefaultStyle() {
     const styleTag = document.createElement('style')
@@ -33,37 +48,31 @@ function loadCurrentPage() {
     const foundRoute = routes.find(r => r.path == location.pathname)
 
     if(foundRoute) {
-        const currentComponent = appComponentInstances[foundRoute.renderComponent.name]
+        const currentComponentSelector = foundRoute.renderComponent().selectorName
 
-        document.querySelector('.root').innerHTML = currentComponent.innerHTML
+        document.querySelector('.root').innerHTML = `<${currentComponentSelector}></${currentComponentSelector}>`
     } else {
         history.replaceState('', '', '/')
         loadCurrentPage()
     }
 }
 
-window.addEventListener('click', e => {
-    if(e.target.matches('[routeLink]')) {
-        e.preventDefault()
-
-        const selectedRoutePath = e.target.getAttribute('routeLink')
-
-        history.pushState('', '', selectedRoutePath)
-        loadCurrentPage()
-    }
-})
-
-
-function initializeDeclarations() {
-    applicationDeclarations.forEach(componentData => {
-        customElements.define(componentData.selectorName, componentData.component)
-
-        appComponentInstances[componentData.component.name] = new componentData.component()
+function initializeServices() {
+    applicationServices.forEach(Service => {
+        appInstances.services[Service.name] = new Service()
     })
 }
 
-window.onpopstate = () => loadCurrentPage()
+function initializeDeclarations() {
+    applicationDeclarations.forEach(Component => {
+        appInstances.components[Component.name] = new (Component(true, appInstances.services))
+    })
+}
 
+initializeServices()
 initializeDeclarations()
 loadDefaultStyle()
 loadCurrentPage()
+
+Router.getInstance().onRouteLinkClick(loadCurrentPage)
+Router.getInstance().onNavigatorChanges(loadCurrentPage)

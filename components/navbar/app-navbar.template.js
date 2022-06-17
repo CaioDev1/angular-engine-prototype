@@ -5,9 +5,9 @@ export default /*html*/ `
         <li class="nav-item mx-2">
             <a class="nav-link btn btn-primary" routeLink="/visitors">Visitantes</a>
         </li>
-        <li class="nav-item mx-2">
+        <!-- <li class="nav-item mx-2">
             <a class="nav-link btn btn-primary" routeLink="/">asdfasdfasfd</a>
-        </li>
+        </li> -->
     </ul>
     </nav>
 `
