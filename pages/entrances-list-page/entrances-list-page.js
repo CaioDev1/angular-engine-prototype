@@ -8,20 +8,28 @@ const EntrancesListPage = (injectedServices) => {
         constructor(services=injectedServices) {
             super()
 
-            this.innerHTML = template(services.Entrances.list)
-            this.style.cssText = style
+            this.services = services
+
+            const shadowDOM = this.attachShadow({mode: 'open'})
+            shadowDOM.innerHTML = template(this.services.Entrances.list)
+
+            const styleTag = document.createElement('style')
+            styleTag.textContent = style
+
+            shadowDOM.appendChild(styleTag)
 
             this.querySelector('[removeButton]') && this.querySelector('[removeButton]').addEventListener('click', e => {
-                const entranceToRemoveIndex = services.Entrances.list.findIndex(entrance => entrance.id == e.target.getAttribute('removeButton'))
+                const entranceToRemoveIndex = this.services.Entrances.list.findIndex(entrance => entrance.id == e.target.getAttribute('removeButton'))
             
                 if(entranceToRemoveIndex != -1) {
-                    services.Entrances.list.splice(entranceToRemoveIndex, 1)
+                    this.services.Entrances.list.splice(entranceToRemoveIndex, 1)
                 
-                    this.innerHTML = template(services.Entrances.list)
+                    shadowDOM.innerHTML = template(this.services.Entrances.list)
                 }
             })
 
             EntrancesListPageComponent.instance = this
+            this.services.Component.instances[EntrancesListPageComponent.name] = this
         }
 
         static getInstance() {
@@ -33,7 +41,7 @@ const EntrancesListPage = (injectedServices) => {
         }
 
         triggerRefresh() {
-            this.innerHTML = template(services.Entrances.list)
+            this.shadowRoot.innerHTML = template(this.services.Entrances.list)
         }
     }
 

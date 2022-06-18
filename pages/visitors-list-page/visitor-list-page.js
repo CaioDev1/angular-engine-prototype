@@ -12,6 +12,7 @@ const VisitorsListPage = (injectedServices) => {
             this.style.cssText = style
 
             VisitorsListPageComponent.instance = this
+            services.Component.instances[VisitorsListPageComponent.name] = this
         }
 
         static getInstance() {

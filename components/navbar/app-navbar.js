@@ -12,6 +12,7 @@ const NavBar = (injectedServices) => {
             this.style.cssText = style
 
             NavBarComponent.instance = this
+            services.Component.instances[NavBarComponent.name] = this
         }
 
         static getInstance() {

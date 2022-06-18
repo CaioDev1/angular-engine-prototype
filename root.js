@@ -28,7 +28,12 @@ const applicationServices = [
     Entrances,
     Exits,
     Visitors,
-    Router
+    Router,
+    class Component {
+        constructor() {
+            this.instances = {}
+        }
+    }
 ]
 
 const serviceInstances = {}
@@ -36,7 +41,7 @@ const serviceInstances = {}
 function loadDefaultStyle() {
     const styleTag = document.createElement('style')
     
-    styleTag.innerHTML = defaultStyle
+    styleTag.innerHTML = defaultStyle()
 
     document.head.appendChild(styleTag)
 }
@@ -48,12 +53,29 @@ function loadCurrentPage() {
         const currentComponentSelector = foundRoute.renderComponent.selector
 
         document.querySelector('.root').innerHTML = `<${currentComponentSelector}></${currentComponentSelector}>`
-
-        const currentComponent = document.querySelector(currentComponentSelector) 
         
-        for(let i; i < currentComponent.children.length; i++) {
+        const currentComponent = serviceInstances['Component'].instances[`${foundRoute.renderComponent.component.name}Component`]
+
+        const scripts = [
+            `console.log('chegou na shadow dom')`,
+            `<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>`,
+            `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">`,
+            `<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>`,
+        ]
+
+        const scriptsTags = scripts.map(script => {
+            const tag = document.createElement('template')
+
+            tag.innerHTML = script
+
+            return tag.content
+        })
+
+        scriptsTags.forEach(tag => currentComponent.shadowRoot.appendChild(tag)) 
+
+       /*  for(let i; i < currentComponent.children.length; i++) {
             currentComponent[i].component = new foundRoute.renderComponent.component()
-        }
+        } */
     } else {
         history.replaceState('', '', '/')
         loadCurrentPage()

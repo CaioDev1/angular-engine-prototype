@@ -77,6 +77,7 @@ const EntrancesFormPage = (injectedServices) => {
             })
     
             EntrancesFormPageComponent.instance = this
+            services.Component.instances[EntrancesFormPageComponent.name] = this
     
             EntrancesFormPageComponent.prototype.testeDoComponent = function() {
                 
