@@ -1,33 +1,32 @@
 import template from './visitor-list-page.template.js'
+import style from './visitor-list-page.style.js'
 
 const COMPONENT_SELECTOR = 'visitors-list-page'
 
-const VisitorsListPage = (bootstrap, injectedServices) => {
-    if(bootstrap) {
-        const VisitorsListPageComponent = class extends HTMLElement {
-            constructor(services=injectedServices) {
-                super()
-    
-                this.innerHTML = template(services.Visitors.list)
-    
-                VisitorsListPageComponent.instance = this
-            }
-    
-            static getInstance() {
-                return VisitorsListPageComponent.instance
-            }
-    
-            static get selectorName() {
-                return COMPONENT_SELECTOR
-            }
+const VisitorsListPage = (injectedServices) => {
+    class VisitorsListPageComponent extends HTMLElement {
+        constructor(services=injectedServices) {
+            super()
+
+            this.innerHTML = template(services.Visitors.list)
+            this.style.cssText = style
+
+            VisitorsListPageComponent.instance = this
         }
 
-        customElements.define(VisitorsListPageComponent.selectorName, VisitorsListPageComponent);
-    
-        return VisitorsListPageComponent
+        static getInstance() {
+            return VisitorsListPageComponent.instance
+        }
+
+        static get selectorName() {
+            return COMPONENT_SELECTOR
+        }
     }
 
-    return customElements.get(COMPONENT_SELECTOR)
+    return VisitorsListPageComponent
 }
 
-export default VisitorsListPage
+export default {
+    component: VisitorsListPage,
+    selector: COMPONENT_SELECTOR
+}

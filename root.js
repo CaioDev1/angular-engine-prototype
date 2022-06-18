@@ -31,10 +31,7 @@ const applicationServices = [
     Router
 ]
 
-const appInstances = {
-    components: {},
-    services: {}
-}
+const serviceInstances = {}
 
 function loadDefaultStyle() {
     const styleTag = document.createElement('style')
@@ -48,9 +45,15 @@ function loadCurrentPage() {
     const foundRoute = routes.find(r => r.path == location.pathname)
 
     if(foundRoute) {
-        const currentComponentSelector = foundRoute.renderComponent().selectorName
+        const currentComponentSelector = foundRoute.renderComponent.selector
 
         document.querySelector('.root').innerHTML = `<${currentComponentSelector}></${currentComponentSelector}>`
+
+        const currentComponent = document.querySelector(currentComponentSelector) 
+        
+        for(let i; i < currentComponent.children.length; i++) {
+            currentComponent[i].component = new foundRoute.renderComponent.component()
+        }
     } else {
         history.replaceState('', '', '/')
         loadCurrentPage()
@@ -59,13 +62,13 @@ function loadCurrentPage() {
 
 function initializeServices() {
     applicationServices.forEach(Service => {
-        appInstances.services[Service.name] = new Service()
+        serviceInstances[Service.name] = new Service()
     })
 }
 
 function initializeDeclarations() {
     applicationDeclarations.forEach(Component => {
-        appInstances.components[Component.name] = new (Component(true, appInstances.services))
+        customElements.define(Component.selector, Component.component(serviceInstances))
     })
 }
 

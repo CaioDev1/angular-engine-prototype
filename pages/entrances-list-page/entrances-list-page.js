@@ -1,47 +1,46 @@
 import template from './entrances-list-page.template.js'
+import style from './entrances-list-page.style.js'
 
 const COMPONENT_SELECTOR = 'entrances-list-page'
 
-const EntrancesListPage = (bootstrap, injectedServices) => {
-    if(bootstrap) {
-        const EntrancesListPageComponent = class extends HTMLElement {
-            constructor(services=injectedServices) {
-                super()
-    
-                this.innerHTML = template(services.Entrances.list)
+const EntrancesListPage = (injectedServices) => {
+    class EntrancesListPageComponent extends HTMLElement {
+        constructor(services=injectedServices) {
+            super()
 
-                this.querySelector('[removeButton]') && this.querySelector('[removeButton]').addEventListener('click', e => {
-                    const entranceToRemoveIndex = services.Entrances.list.findIndex(entrance => entrance.id == e.target.getAttribute('removeButton'))
+            this.innerHTML = template(services.Entrances.list)
+            this.style.cssText = style
+
+            this.querySelector('[removeButton]') && this.querySelector('[removeButton]').addEventListener('click', e => {
+                const entranceToRemoveIndex = services.Entrances.list.findIndex(entrance => entrance.id == e.target.getAttribute('removeButton'))
+            
+                if(entranceToRemoveIndex != -1) {
+                    services.Entrances.list.splice(entranceToRemoveIndex, 1)
                 
-                    if(entranceToRemoveIndex != -1) {
-                        services.Entrances.list.splice(entranceToRemoveIndex, 1)
-                    
-                        this.innerHTML = template(services.Entrances.list)
-                    }
-                })
+                    this.innerHTML = template(services.Entrances.list)
+                }
+            })
 
-                EntrancesListPageComponent.instance = this
-            }
-    
-            static getInstance() {
-                return EntrancesListPageComponent.instance
-            }
-    
-            static get selectorName() {
-                return COMPONENT_SELECTOR
-            }
-
-            triggerRefresh() {
-                this.innerHTML = template(services.Entrances.list)
-            }
+            EntrancesListPageComponent.instance = this
         }
 
-        customElements.define(EntrancesListPageComponent.selectorName, EntrancesListPageComponent);
-    
-        return EntrancesListPageComponent
+        static getInstance() {
+            return EntrancesListPageComponent.instance
+        }
+
+        static get selectorName() {
+            return COMPONENT_SELECTOR
+        }
+
+        triggerRefresh() {
+            this.innerHTML = template(services.Entrances.list)
+        }
     }
 
-    return customElements.get(COMPONENT_SELECTOR) 
+    return EntrancesListPageComponent
 }
 
-export default EntrancesListPage
+export default {
+    component: EntrancesListPage,
+    selector: COMPONENT_SELECTOR
+}

@@ -1,34 +1,32 @@
 import template from './app-navbar.template.js'
+import style from './app-navbar.style.js'
 
 const COMPONENT_SELECTOR = 'app-navbar'
 
-const NavBar = (bootstrap, ...props) => {
-    if(bootstrap) {
-        const NavBarComponent = class extends HTMLElement {
-            constructor(a=props) {
-                super()
-    
-                this.innerHTML = template
-    
-                NavBarComponent.instance = this
-            }
-    
-            static getInstance() {
-                return NavBarComponent.instance
-            }
-    
-            static get selectorName() {
-                return COMPONENT_SELECTOR
-            }
+const NavBar = (injectedServices) => {
+    class NavBarComponent extends HTMLElement {
+        constructor(services=injectedServices) {
+            super()
+
+            this.innerHTML = template
+            this.style.cssText = style
+
+            NavBarComponent.instance = this
         }
 
-        customElements.define(NavBarComponent.selectorName, NavBarComponent);
+        static getInstance() {
+            return NavBarComponent.instance
+        }
 
-        return NavBarComponent
+        static get selectorName() {
+            return COMPONENT_SELECTOR
+        }
     }
-    
 
-    return customElements.get(COMPONENT_SELECTOR) 
+    return NavBarComponent
 }
 
-export default NavBar
+export default {
+    component: NavBar,
+    selector: COMPONENT_SELECTOR
+}
