@@ -52,30 +52,7 @@ function loadCurrentPage() {
     if(foundRoute) {
         const currentComponentSelector = foundRoute.renderComponent.selector
 
-        document.querySelector('.root').innerHTML = `<${currentComponentSelector}></${currentComponentSelector}>`
-        
-        const currentComponent = serviceInstances['Component'].instances[`${foundRoute.renderComponent.component.name}Component`]
-
-        const scripts = [
-            `console.log('chegou na shadow dom')`,
-            `<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>`,
-            `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">`,
-            `<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>`,
-        ]
-
-        const scriptsTags = scripts.map(script => {
-            const tag = document.createElement('template')
-
-            tag.innerHTML = script
-
-            return tag.content
-        })
-
-        scriptsTags.forEach(tag => currentComponent.shadowRoot.appendChild(tag)) 
-
-       /*  for(let i; i < currentComponent.children.length; i++) {
-            currentComponent[i].component = new foundRoute.renderComponent.component()
-        } */
+        document.querySelector('.root').innerHTML = `<${currentComponentSelector}></${currentComponentSelector}>`        
     } else {
         history.replaceState('', '', '/')
         loadCurrentPage()

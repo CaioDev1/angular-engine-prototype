@@ -1,6 +1,6 @@
-export default (entrances) => /*html*/`
+export default (component) => /*html*/`
     <app-navbar></app-navbar>
-    <h1>HOME - PORTARIA</h1>
+    <h1 app-click="$app.testedeScript($event, 'teste de parametro')">HOME - PORTARIA</h1>
     <button routeLink="/form" class="btn btn-lg btn-warning col-3 my-3">Nova entrada</button>
     <table class="table">
         <thead>
@@ -12,7 +12,7 @@ export default (entrances) => /*html*/`
             <th scope="col">Opções</th>
         </thead>
         ${
-            entrances.map(entrance => {                
+            component.entrances.map(entrance => {                
                 return /*html*/`<tr>
                     <td scope='row'>${entrance.id}</td>
                     <td scope='row'>${entrance.entrance_type_name}</td>
@@ -21,8 +21,7 @@ export default (entrances) => /*html*/`
                     <td>${entrance.entrance_end_prevision}</td>
                     <td>
                         <button routeLink="/form?entrance_id=${entrance.id}" class="btn btn-sm btn-success">EDITAR</button> | 
-                        <!-- <button removeButton="${entrance.id}" class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button> -->
-                        <button onclick="testeDeEscopo(event)" class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
+                        <button app-click="$app.removeEntrance(${entrance.id})" class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
                     </td>
                 </tr>`
             })
