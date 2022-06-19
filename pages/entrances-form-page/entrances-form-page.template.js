@@ -1,8 +1,8 @@
-export default /*html*/`
+export default () => /*html*/`
 <section class="py-4">
     <app-navbar></app-navbar>
     <h1>Cadastro</h1>
-    <form>
+    <form app-submit="$app.save($event)">
         <fieldset class="form-group">
             <legend class="text-white text-start">Visitante</legend>
     

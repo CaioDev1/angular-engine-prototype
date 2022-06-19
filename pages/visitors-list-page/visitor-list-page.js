@@ -1,5 +1,6 @@
 import template from './visitor-list-page.template.js'
 import style from './visitor-list-page.style.js'
+import Component from '../../core/component.js'
 
 const COMPONENT_SELECTOR = 'visitors-list-page'
 
@@ -8,8 +9,9 @@ const VisitorsListPage = (injectedServices) => {
         constructor(services=injectedServices) {
             super()
 
-            this.innerHTML = template(services.Visitors.list)
-            this.style.cssText = style
+            this.visitors = services.Visitors.list
+
+            Component.initializeComponent(this, template, style)
 
             VisitorsListPageComponent.instance = this
             services.Component.instances[VisitorsListPageComponent.name] = this
