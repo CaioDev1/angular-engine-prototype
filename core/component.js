@@ -51,6 +51,23 @@ export default class Component {
         componentDOM.childNodes.forEach(child => {
             componentInstance.appendChild(child)
         })
+
+        Component.initializeRefreshListener(componentInstance)
+    }
+
+    static initializeRefreshListener(component) {
+        Object.setPrototypeOf(component, new Proxy(Object.create(HTMLElement.prototype), {
+            set(...args) {
+                console.log("Valor mudou");
+
+                //this.refresh()
+                return true;
+            }
+        }))
+    }
+
+    static refresh() {
+        this.innerHTML = template(this)
     }
 
     static getAllComponentMethodsNames(componentInstance) {

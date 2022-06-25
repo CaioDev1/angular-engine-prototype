@@ -8,6 +8,7 @@ const EntrancesListPage = (injectedServices) => {
     class EntrancesListPageComponent extends HTMLElement {
         constructor(services=injectedServices) {
             super()
+            
             this.entrances = services.Entrances.list
 
             Component.initializeComponent(this, template, style)
@@ -36,10 +37,6 @@ const EntrancesListPage = (injectedServices) => {
             
                 this.triggerRefresh()
             }
-        }
-
-        triggerRefresh() {
-            this.innerHTML = template(this)
         }
     }
 
