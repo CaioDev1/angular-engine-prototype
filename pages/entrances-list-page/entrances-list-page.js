@@ -5,12 +5,14 @@ import Component from '../../core/component.js'
 const COMPONENT_SELECTOR = 'entrances-list-page'
 
 const EntrancesListPage = (injectedServices) => {
+    const teste = {texto: 'asdfasdfasdf'}
     class EntrancesListPageComponent extends HTMLElement {
         constructor(services=injectedServices) {
             super()
 
-            this.title = 'Início'
-            
+            this.title = teste
+            console.log(this.title, typeof this.title)
+            console.log(teste, typeof teste)
             this.entrances = services.Entrances.list
             
             EntrancesListPageComponent.instance = this

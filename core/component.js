@@ -86,8 +86,18 @@ export default class Component {
         }))
     }
 
-    refresh(target, receiver) {
-        Reflect.set(target, 'innerHTML', this.componentTemplateFactory(this.componentInstance), receiver)
+    refresh(target, receiver) {        
+        const componentTemplate = this.componentTemplateFactory(this.componentInstance)
+        
+        this.componentDOM = new DOMParser().parseFromString(componentTemplate, 'text/html').body
+
+        this.initializeDOMTemplateEventListeners()
+
+        Reflect.set(target, 'innerHTML', '', receiver)
+
+        this.componentDOM.childNodes.forEach(child => {
+            this.componentInstance.appendChild(child)
+        })
     }
 
     getAllComponentMethodsNames() {
