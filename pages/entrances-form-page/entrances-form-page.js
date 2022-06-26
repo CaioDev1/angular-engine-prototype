@@ -14,7 +14,7 @@ const EntrancesFormPage = (injectedServices) => {
             this.entrances = services.Entrances
             this.visitors = services.Visitors
 
-            Component.initializeComponent(this, template, style)
+            new Component(EntrancesFormPageComponent, template, style)
 
             this.entranceId = this.router.getRouteParams('entrance_id')
 

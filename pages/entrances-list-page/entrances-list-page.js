@@ -8,13 +8,15 @@ const EntrancesListPage = (injectedServices) => {
     class EntrancesListPageComponent extends HTMLElement {
         constructor(services=injectedServices) {
             super()
+
+            this.title = 'Início'
             
             this.entrances = services.Entrances.list
-
-            Component.initializeComponent(this, template, style)
-
+            
             EntrancesListPageComponent.instance = this
             services.Component.instances[EntrancesListPageComponent.name] = this
+            
+            new Component(EntrancesListPageComponent, template, style)
         }
 
         static getInstance() {

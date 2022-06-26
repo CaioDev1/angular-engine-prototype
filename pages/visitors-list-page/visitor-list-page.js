@@ -11,7 +11,7 @@ const VisitorsListPage = (injectedServices) => {
 
             this.visitors = services.Visitors.list
 
-            Component.initializeComponent(this, template, style)
+            new Component(VisitorsListPageComponent, template, style)
 
             VisitorsListPageComponent.instance = this
             services.Component.instances[VisitorsListPageComponent.name] = this

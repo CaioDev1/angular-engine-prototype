@@ -1,6 +1,6 @@
 export default (component) => /*html*/`
     <app-navbar></app-navbar>
-    <h1 app-click="$app.testedeScript($event, 'teste de parametro')">HOME - PORTARIA</h1>
+    <h1 app-click="$app.testedeScript($event, 'teste de parametro'); $app.title = 'asdfasdf'">${component.title}</h1>
     <button routeLink="/form" class="btn btn-lg btn-warning col-3 my-3">Nova entrada</button>
     <table class="table">
         <thead>

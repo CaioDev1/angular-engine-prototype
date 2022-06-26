@@ -1,22 +1,48 @@
 import eventsList from './events-list.js'
 export default class Component {
-    constructor() {
+    constructor(componentClass, template, style) {
+        this.componentClass = componentClass
+        this.componentTemplateFactory = template
+        this.componentStyle = style
 
+        this.componentDOM = undefined
+
+        this.initializeComponent()
     }
 
-    static initializeComponent(componentInstance, template, style) {
-        const componentTemplate = template(componentInstance)
+    get componentInstance() {
+        return this.componentClass.getInstance()
+    }
+    
+    initializeComponent() {
+        const componentTemplate = this.componentTemplateFactory(this.componentInstance)
 
-        const componentDOM = new DOMParser().parseFromString(componentTemplate, 'text/html').body
+        this.componentDOM = new DOMParser().parseFromString(componentTemplate, 'text/html').body
+        
+        this.initializeDOMTemplateEventListeners()
 
-        const componentMethodsNames = Component.getAllComponentMethodsNames(componentInstance)
+        const styleTag = document.createElement('style')            
+        styleTag.textContent = this.componentStyle
+        this.componentInstance.appendChild(styleTag)
+
+        this.componentDOM.childNodes.forEach(child => {
+            this.componentInstance.appendChild(child)
+        })
+
+        this.initializeRefreshListener()
+    }
+
+
+
+    initializeDOMTemplateEventListeners() {
+        const componentMethodsNames = this.getAllComponentMethodsNames()
 
         Object.keys(eventsList).forEach(key => {
-            componentDOM.querySelectorAll(`[${key}]`).forEach(element => {
+            this.componentDOM.querySelectorAll(`[${key}]`).forEach(element => {
                 const eventStringToExecute = element.getAttribute(key)
                 
                 const eventMethodName = eventStringToExecute.match(/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\()/g)[0]
-                if(!componentMethodsNames.includes(eventMethodName)) throw new Error(`Bind method "${eventMethodName}" does not exist on component: ${EntrancesListPageComponent.name}`)
+                if(!componentMethodsNames.includes(eventMethodName)) throw new Error(`Bind method "${eventMethodName}" does not exist on component: ${EntrancesListPagethis.name}`)
 
                 let args = /\(\s*([^)]+?)\s*\)/.exec(eventStringToExecute);
 
@@ -26,14 +52,14 @@ export default class Component {
 
                 element.addEventListener(eventsList[key], event => {
                     try {
-                        const scope = {component: componentInstance}
+                        const scope = {component: this.componentInstance}
                         if(args && args.some(arg => arg == '$event')) scope.$event = event
 
                         const transpiledStringToExecute = eventStringToExecute
-                            .replaceAll('$app', 'this.component')   
+                            .replaceAll('$app', 'this.component') 
                             .replaceAll('$event', 'this.$event')
 
-                        Component.scopedEval(scope, transpiledStringToExecute)
+                        this.scopedEval(scope, transpiledStringToExecute)
                     } catch (error) {
                         console.error(`Error ocurred while trying to transpile the app expression\nExpression: ${error}`)
                         throw new Error(error)   
@@ -43,48 +69,37 @@ export default class Component {
                 element.removeAttribute(key)
             })
         })
-
-        const styleTag = document.createElement('style')            
-        styleTag.textContent = style
-        componentInstance.appendChild(styleTag)
-
-        componentDOM.childNodes.forEach(child => {
-            componentInstance.appendChild(child)
-        })
-
-        Component.initializeRefreshListener(componentInstance)
     }
 
-    static initializeRefreshListener(component) {
-        Object.setPrototypeOf(component, new Proxy(Object.create(HTMLElement.prototype), {
-            set(...args) {
-                console.log("Valor mudou");
+    initializeRefreshListener() {
+        Object.setPrototypeOf(this.componentInstance, new Proxy(Object.create(this.componentClass.prototype), {
+            set: (target, changedKey, changedValue, receiver) => {
+                this.refresh(receiver)
 
-                //this.refresh()
                 return true;
             }
         }))
     }
 
-    static refresh() {
-        this.innerHTML = template(this)
+    refresh(updatedComponentInstance) {
+        this.componentDOM.innerHTML = this.componentTemplateFactory(updatedComponentInstance)
     }
 
-    static getAllComponentMethodsNames(componentInstance) {
+    getAllComponentMethodsNames() {
         const props = []
 
-        let obj = componentInstance
+        let obj = this.componentInstance
 
         do {
             props.push(...Object.getOwnPropertyNames(obj))
         } while (obj = Object.getPrototypeOf(obj))
         
         return props.sort().filter((e, i, arr) => { 
-           if (e != arr[i+1] && typeof componentInstance[e] == 'function') return true
+           if (e != arr[i+1] && typeof this.componentInstance[e] == 'function') return true
         })
     }
 
-    static scopedEval(scope, script) {
+    scopedEval(scope, script) {
         return Function(`"use strict"; ${script}`).bind(scope)()
     }
 }
