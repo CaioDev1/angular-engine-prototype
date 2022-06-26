@@ -6,6 +6,7 @@ export default class Component {
         this.componentStyle = style
 
         this.componentDOM = undefined
+        //this.noProxyComponentInstance = this.componentInstance.cloneNode(true)
 
         this.initializeComponent()
     }
@@ -60,6 +61,8 @@ export default class Component {
                             .replaceAll('$event', 'this.$event')
 
                         this.scopedEval(scope, transpiledStringToExecute)
+
+                        console.log(this.componentInstance.title)
                     } catch (error) {
                         console.error(`Error ocurred while trying to transpile the app expression\nExpression: ${error}`)
                         throw new Error(error)   
@@ -74,15 +77,17 @@ export default class Component {
     initializeRefreshListener() {
         Object.setPrototypeOf(this.componentInstance, new Proxy(Object.create(this.componentClass.prototype), {
             set: (target, changedKey, changedValue, receiver) => {
-                this.refresh(receiver)
+                Reflect.set(target, changedKey, changedValue, receiver)
+
+                this.refresh(target, receiver)
 
                 return true;
             }
         }))
     }
 
-    refresh(updatedComponentInstance) {
-        this.componentDOM.innerHTML = this.componentTemplateFactory(updatedComponentInstance)
+    refresh(target, receiver) {
+        Reflect.set(target, 'innerHTML', this.componentTemplateFactory(this.componentInstance), receiver)
     }
 
     getAllComponentMethodsNames() {
