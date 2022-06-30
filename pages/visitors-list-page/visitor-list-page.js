@@ -11,14 +11,9 @@ const VisitorsListPage = (injectedServices) => {
 
             this.visitors = services.Visitors.list
 
-            new Component(VisitorsListPageComponent, template, style)
+            new Component(this, template, style)
 
-            VisitorsListPageComponent.instance = this
             services.Component.instances[VisitorsListPageComponent.name] = this
-        }
-
-        static getInstance() {
-            return VisitorsListPageComponent.instance
         }
 
         static get selectorName() {

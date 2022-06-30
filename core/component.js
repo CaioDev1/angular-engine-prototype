@@ -1,39 +1,22 @@
 import eventsList from './events-list.js'
 export default class Component {
-    constructor(componentClass, template, style) {
-        this.componentClass = componentClass
+    constructor(componentInstance, template, style, initialState) {
+        this.componentInstance = componentInstance
         this.componentTemplateFactory = template
         this.componentStyle = style
 
         this.componentDOM = undefined
-        //this.noProxyComponentInstance = this.componentInstance.cloneNode(true)
+
+        this.hooks = initialState
 
         this.initializeComponent()
     }
-
-    get componentInstance() {
-        return this.componentClass.getInstance()
-    }
     
     initializeComponent() {
-        const componentTemplate = this.componentTemplateFactory(this.componentInstance)
-
-        this.componentDOM = new DOMParser().parseFromString(componentTemplate, 'text/html').body
-        
-        this.initializeDOMTemplateEventListeners()
-
-        const styleTag = document.createElement('style')            
-        styleTag.textContent = this.componentStyle
-        this.componentInstance.appendChild(styleTag)
-
-        this.componentDOM.childNodes.forEach(child => {
-            this.componentInstance.appendChild(child)
-        })
-
         this.initializeRefreshListener()
+
+        this.render()
     }
-
-
 
     initializeDOMTemplateEventListeners() {
         const componentMethodsNames = this.getAllComponentMethodsNames()
@@ -53,16 +36,15 @@ export default class Component {
 
                 element.addEventListener(eventsList[key], event => {
                     try {
-                        const scope = {component: this.componentInstance}
+                        const scope = {component: this.componentInstance, hooks: this.hooks}
                         if(args && args.some(arg => arg == '$event')) scope.$event = event
 
                         const transpiledStringToExecute = eventStringToExecute
                             .replaceAll('$app', 'this.component') 
                             .replaceAll('$event', 'this.$event')
+                            .replaceAll('$hooks', 'this.hooks')
 
                         this.scopedEval(scope, transpiledStringToExecute)
-
-                        console.log(this.componentInstance.title)
                     } catch (error) {
                         console.error(`Error ocurred while trying to transpile the app expression\nExpression: ${error}`)
                         throw new Error(error)   
@@ -75,25 +57,31 @@ export default class Component {
     }
 
     initializeRefreshListener() {
-        Object.setPrototypeOf(this.componentInstance, new Proxy(Object.create(this.componentClass.prototype), {
-            set: (target, changedKey, changedValue, receiver) => {
-                Reflect.set(target, changedKey, changedValue, receiver)
-
-                this.refresh(target, receiver)
-
-                return true;
-            }
-        }))
+        if(this.hooks) {
+            this.hooks = new Proxy(this.hooks, {
+                set: (target, changedKey, changedValue, receiver) => {
+                    Reflect.set(target, changedKey, changedValue, receiver)
+    
+                    this.render()
+    
+                    return true;
+                }
+            })
+        }
     }
 
-    refresh(target, receiver) {        
-        const componentTemplate = this.componentTemplateFactory(this.componentInstance)
+    render() {        
+        const componentTemplate = this.componentTemplateFactory(this.hooks)
         
         this.componentDOM = new DOMParser().parseFromString(componentTemplate, 'text/html').body
 
+        const styleTag = document.createElement('style')            
+        styleTag.textContent = this.componentStyle
+        this.componentDOM.appendChild(styleTag)
+
         this.initializeDOMTemplateEventListeners()
 
-        Reflect.set(target, 'innerHTML', '', receiver)
+        this.componentInstance.innerHTML = ''
 
         this.componentDOM.childNodes.forEach(child => {
             this.componentInstance.appendChild(child)

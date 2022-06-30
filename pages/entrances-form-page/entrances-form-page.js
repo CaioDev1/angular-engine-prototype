@@ -14,7 +14,7 @@ const EntrancesFormPage = (injectedServices) => {
             this.entrances = services.Entrances
             this.visitors = services.Visitors
 
-            new Component(EntrancesFormPageComponent, template, style)
+            new Component(this, template, style)
 
             this.entranceId = this.router.getRouteParams('entrance_id')
 
@@ -35,12 +35,7 @@ const EntrancesFormPage = (injectedServices) => {
                 form.elements['entrance_reason'].value = selectedEntrance.entrance_reason
             }
     
-            EntrancesFormPageComponent.instance = this
             services.Component.instances[EntrancesFormPageComponent.name] = this
-    
-            EntrancesFormPageComponent.prototype.testeDoComponent = function() {
-                
-            }
         }
 
         save(event) {
@@ -86,10 +81,6 @@ const EntrancesFormPage = (injectedServices) => {
             }
 
             this.router.navigateTo('/')
-        }
-
-        static getInstance() {
-            return EntrancesFormPageComponent.instance
         }
 
         static get selectorName() {

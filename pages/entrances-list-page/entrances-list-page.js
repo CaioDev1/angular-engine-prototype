@@ -5,24 +5,22 @@ import Component from '../../core/component.js'
 const COMPONENT_SELECTOR = 'entrances-list-page'
 
 const EntrancesListPage = (injectedServices) => {
-    const teste = {texto: 'asdfasdfasdf'}
     class EntrancesListPageComponent extends HTMLElement {
         constructor(services=injectedServices) {
             super()
 
-            this.title = teste
-            console.log(this.title, typeof this.title)
-            console.log(teste, typeof teste)
-            this.entrances = services.Entrances.list
-            
-            EntrancesListPageComponent.instance = this
-            services.Component.instances[EntrancesListPageComponent.name] = this
-            
-            new Component(EntrancesListPageComponent, template, style)
-        }
+            const initialHooks = {title: false}
 
-        static getInstance() {
-            return EntrancesListPageComponent.instance
+            initialHooks.entrances = services.Entrances.list
+
+            services.Component.instances[EntrancesListPageComponent.name] = this
+                        
+            this.component = new Component(
+                this, 
+                template, 
+                style, 
+                initialHooks
+            )
         }
 
         static get selectorName() {
@@ -34,10 +32,10 @@ const EntrancesListPage = (injectedServices) => {
         }
 
         removeEntrance(entranceId) {
-            const entranceToRemoveIndex = this.entrances.findIndex(entrance => entrance.id == entranceId)
+            const entranceToRemoveIndex = this.component.hooks.entrances.findIndex(entrance => entrance.id == entranceId)
             
             if(entranceToRemoveIndex != -1) {
-                this.entrances.splice(entranceToRemoveIndex, 1)
+                this.component.hooks.entrances.splice(entranceToRemoveIndex, 1)
             
                 this.triggerRefresh()
             }

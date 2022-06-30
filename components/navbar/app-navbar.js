@@ -1,5 +1,6 @@
 import template from './app-navbar.template.js'
 import style from './app-navbar.style.js'
+import Component from '../../core/component.js'
 
 const COMPONENT_SELECTOR = 'app-navbar'
 
@@ -11,12 +12,9 @@ const NavBar = (injectedServices) => {
             this.innerHTML = template
             this.style.cssText = style
 
-            NavBarComponent.instance = this
             services.Component.instances[NavBarComponent.name] = this
-        }
 
-        static getInstance() {
-            return NavBarComponent.instance
+            this.component = new Component(this, template, style)
         }
 
         static get selectorName() {
