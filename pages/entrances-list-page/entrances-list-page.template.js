@@ -1,5 +1,5 @@
 export default (hooks) => /*html*/`
-    <app-navbar></app-navbar>
+    ${hooks.title ? '<app-navbar></app-navbar>' : ''}
     <h1 app-click="$app.testedeScript($event, 'teste de parametro'); $hooks.title = !$hooks.title">${hooks.title}</h1>
     <button routeLink="/form" class="btn btn-lg btn-warning col-3 my-3">Nova entrada</button>
     <table class="table">

@@ -9,7 +9,7 @@ import NavBar from './components/navbar/app-navbar.js'
 
 // SERVICES
 import {Entrances, Exits, Visitors} from './services/doorKeeper.service.js'
-import Router from './services/router.service.js'
+import Router from './core/services/router.service.js'
 
 const routes = [
     {path: '/', renderComponent: EntrancesListPage},

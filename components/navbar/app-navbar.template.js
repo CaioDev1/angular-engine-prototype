@@ -1,4 +1,4 @@
-export default /*html*/ `
+export default () => /*html*/ `
     <nav id="" class="navbar navbar-light rounded">
     <a class="navbar-brand btn btn-outline-warning text-white" routeLink="/">Home</a>
     <ul class="nav nav-pills">

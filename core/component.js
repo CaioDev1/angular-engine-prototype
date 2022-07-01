@@ -1,6 +1,6 @@
 import eventsList from './events-list.js'
 export default class Component {
-    constructor(componentInstance, template, style, initialState) {
+    constructor(componentInstance, template, style, initialState={}) {
         this.componentInstance = componentInstance
         this.componentTemplateFactory = template
         this.componentStyle = style
