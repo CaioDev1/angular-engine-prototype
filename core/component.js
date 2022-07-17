@@ -19,25 +19,16 @@ export default class Component {
     }
 
     initializeDOMTemplateEventListeners() {
-        const componentMethodsNames = this.getAllComponentMethodsNames()
-
         Object.keys(eventsList).forEach(key => {
             this.componentDOM.querySelectorAll(`[${key}]`).forEach(element => {
                 const eventStringToExecute = element.getAttribute(key)
-                
-                const eventMethodName = eventStringToExecute.match(/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\()/g)[0]
-                if(!componentMethodsNames.includes(eventMethodName)) throw new Error(`Bind method "${eventMethodName}" does not exist on component: ${EntrancesListPagethis.name}`)
 
-                let args = /\(\s*([^)]+?)\s*\)/.exec(eventStringToExecute);
-
-                if (args[1]) {
-                    args = args[1].split(/\s*,\s*/)
-                }
+                const {eventMethods, eventMethodArgs} = this.verifyBindMethods(eventStringToExecute)
 
                 element.addEventListener(eventsList[key], event => {
                     try {
                         const scope = {component: this.componentInstance, hooks: this.hooks}
-                        if(args && args.some(arg => arg == '$event')) scope.$event = event
+                        if(eventMethods && eventMethodArgs && eventMethodArgs.some(arg => arg == '$event')) scope.$event = event
 
                         const transpiledStringToExecute = eventStringToExecute
                             .replaceAll('$app', 'this.component') 
@@ -86,6 +77,39 @@ export default class Component {
         this.componentDOM.childNodes.forEach(child => {
             this.componentInstance.appendChild(child)
         })
+    }
+
+    verifyBindMethods(stringToExecute) {
+        const componentMethodsNames = this.getAllComponentMethodsNames()
+
+        const eventMethods = stringToExecute.match(/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\()/g)
+        let eventMethodArgs = []
+
+        if(eventMethods) {
+            eventMethods.forEach(eventMethodName => {
+                if(!componentMethodsNames.includes(eventMethodName)) throw new Error(`Bind method "${eventMethodName}" does not exist on component: ${EntrancesListPagethis.name}`)
+                
+                eventMethodArgs = /\(\s*([^)]+?)\s*\)/.exec(eventMethods);
+    
+                if (eventMethodArgs[1]) {
+                    eventMethodArgs = eventMethodArgs[1].split(/\s*,\s*/)
+                }
+            })
+            
+
+            //const formattedMethodsList = 
+
+            return {
+                eventMethods: eventMethods ? eventMethods : [],
+                eventMethodArgs
+            }
+        }
+
+        return {eventMethods: []}
+    }
+
+    formatComponentInputBinds() {
+
     }
 
     getAllComponentMethodsNames() {

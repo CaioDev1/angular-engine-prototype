@@ -82,10 +82,6 @@ const EntrancesFormPage = (injectedServices) => {
 
             this.router.navigateTo('/')
         }
-
-        static get selectorName() {
-            return COMPONENT_SELECTOR
-        }
     }
 
     return EntrancesFormPageComponent

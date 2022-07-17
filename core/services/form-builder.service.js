@@ -6,8 +6,6 @@ export default class FormBuilder {
     coreServiceBoostrap(contextComponent) {
         contextComponent.querySelectorAll('[formGroup]').forEach(element => {
             element.querySelectorAll('[formControlName]').forEach(field => {
-                document.createElement('input').type
-                
                 if(field.type != 'input') {
                     field.addEventListener('change', e => {
                         console.log('evento onchange', field)

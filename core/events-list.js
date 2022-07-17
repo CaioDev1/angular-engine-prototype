@@ -1,4 +1,4 @@
 export default {
-    'app-click': 'click',
-    'app-submit': 'submit'
+    'evt-click': 'click',
+    'evt-submit': 'submit'
 }

@@ -14,17 +14,13 @@ const EntrancesListPage = (injectedServices) => {
             initialHooks.entrances = services.Entrances.list
 
             services.Component.instances[EntrancesListPageComponent.name] = this
-                        
+            
             this.component = new Component(
                 this, 
                 template, 
                 style, 
                 initialHooks
             )
-        }
-
-        static get selectorName() {
-            return COMPONENT_SELECTOR
         }
 
         testedeScript(...args) {

@@ -1,6 +1,6 @@
 export default (hooks) => /*html*/`
     ${hooks.title ? '<app-navbar></app-navbar>' : ''}
-    <h1 app-click="$app.testedeScript($event, 'teste de parametro'); $hooks.title = !$hooks.title">${hooks.title}</h1>
+    <h1 evt-click="$app.testedeScript ($event, 'teste de parametro'); $app.testedeScript ('segundo par'); $hooks.title = !$hooks.title">${hooks.title}</h1>
     <button routeLink="/form" class="btn btn-lg btn-warning col-3 my-3">Nova entrada</button>
     <table class="table">
         <thead>
@@ -22,7 +22,7 @@ export default (hooks) => /*html*/`
                         <td>${entrance.entrance_end_prevision}</td>
                         <td>
                             <button routeLink="/form?entrance_id=${entrance.id}" class="btn btn-sm btn-success">EDITAR</button> | 
-                            <button app-click="$app.removeEntrance(${entrance.id})" class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
+                            <button evt-click="$app.removeEntrance(${entrance.id})" class="btn btn-sm btn-primary">REGISTRAR SAÍDA</button>
                         </td>
                     </tr>`
             })
