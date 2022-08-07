@@ -1,24 +1,27 @@
 import template from './entrances-list-page.template.js'
 import style from './entrances-list-page.style.js'
-import Component from '../../core/component.js'
+import AppComponent from '../../core/component.js'
 
 const COMPONENT_SELECTOR = 'entrances-list-page'
 
 const EntrancesListPage = (injectedServices) => {
     class EntrancesListPageComponent extends HTMLElement {
-        constructor(services=injectedServices) {
+        constructor({Entrances, Component}=injectedServices) {
             super()
 
-            const initialHooks = {title: false}
+            const initialHooks = {
+                title: false,
+                entrances: Entrances
+            }
 
-            initialHooks.entrances = services.Entrances.list
-
-            services.Component.instances[EntrancesListPageComponent.name] = this
+            Component.instances[EntrancesListPageComponent.name] = this
             
-            this.component = new Component(
+            this.component = new AppComponent(
                 this, 
                 template, 
                 style, 
+                EntrancesListPageComponent.name,
+                injectedServices,
                 initialHooks
             )
         }
@@ -28,12 +31,12 @@ const EntrancesListPage = (injectedServices) => {
         }
 
         removeEntrance(entranceId) {
-            const entranceToRemoveIndex = this.component.hooks.entrances.findIndex(entrance => entrance.id == entranceId)
+            const entranceToRemoveIndex = this.component.hooks.entrances.entrances.findIndex(entrance => entrance.id == entranceId)
             
             if(entranceToRemoveIndex != -1) {
-                this.component.hooks.entrances.splice(entranceToRemoveIndex, 1)
-            
-                this.triggerRefresh()
+                this.component.hooks.entrances.entrances.splice(entranceToRemoveIndex, 1)
+
+                this.component.render()
             }
         }
     }

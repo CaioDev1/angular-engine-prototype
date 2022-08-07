@@ -1,5 +1,5 @@
-export default (hooks) => /*html*/`
-    ${hooks.title ? '<app-navbar></app-navbar>' : ''}
+export default (hooks, services) => /*html*/`
+    <app-navbar></app-navbar>
     <h1 evt-click="$app.testedeScript ($event, 'teste de parametro'); $app.testedeScript ('segundo par'); $hooks.title = !$hooks.title">${hooks.title}</h1>
     <button routeLink="/form" class="btn btn-lg btn-warning col-3 my-3">Nova entrada</button>
     <table class="table">
@@ -12,7 +12,7 @@ export default (hooks) => /*html*/`
             <th scope="col">Opções</th>
         </thead>
         ${
-            hooks.entrances.map(entrance => {                
+            services.Entrances.entrances.map(entrance => {                
                 return /*html*/`
                     <tr>
                         <td scope='row'>${entrance.id}</td>

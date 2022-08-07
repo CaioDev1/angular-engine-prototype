@@ -1,19 +1,23 @@
 import template from './visitor-list-page.template.js'
 import style from './visitor-list-page.style.js'
-import Component from '../../core/component.js'
+import AppComponent from '../../core/component.js'
 
 const COMPONENT_SELECTOR = 'visitors-list-page'
 
 const VisitorsListPage = (injectedServices) => {
     class VisitorsListPageComponent extends HTMLElement {
-        constructor(services=injectedServices) {
+        constructor({Visitors, Component}=injectedServices) {
             super()
 
-            this.visitors = services.Visitors.list
-
-            new Component(this, template, style)
-
-            services.Component.instances[VisitorsListPageComponent.name] = this
+            Component.instances[VisitorsListPageComponent.name] = this
+           
+            this.component = new AppComponent(
+                this, 
+                template, 
+                style,
+                VisitorsListPageComponent.name,
+                injectedServices,
+            )
         }
     }
 

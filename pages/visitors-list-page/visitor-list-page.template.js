@@ -1,8 +1,8 @@
-export default (component) => /*html*/`
+export default (hooks, services) => /*html*/`
     <app-navbar></app-navbar>
     <div id="accordion">
         ${
-            component.visitors.map((visitor, i) => {
+            services.Visitors.visitors.map((visitor, i) => {
                 return (/*html*/`
                     <div class="card text-start">
                         <div class="card-header" id="heading${i}">

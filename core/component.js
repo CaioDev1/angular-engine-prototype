@@ -1,9 +1,11 @@
 import eventsList from './events-list.js'
 export default class Component {
-    constructor(componentInstance, template, style, initialState={}) {
+    constructor(componentInstance, template, style, componentClassName, componentServices, initialState={}) {
         this.componentInstance = componentInstance
         this.componentTemplateFactory = template
         this.componentStyle = style
+        this.componentClassName = componentClassName
+        this.componentServices = componentServices
 
         this.componentDOM = undefined
 
@@ -23,22 +25,21 @@ export default class Component {
             this.componentDOM.querySelectorAll(`[${key}]`).forEach(element => {
                 const eventStringToExecute = element.getAttribute(key)
 
-                const {eventMethods, eventMethodArgs} = this.verifyBindMethods(eventStringToExecute)
-
                 element.addEventListener(eventsList[key], event => {
                     try {
-                        const scope = {component: this.componentInstance, hooks: this.hooks}
-                        if(eventMethods && eventMethodArgs && eventMethodArgs.some(arg => arg == '$event')) scope.$event = event
+                        const scope = {$app: this.componentInstance, $hooks: this.hooks, $event: event}
 
-                        const transpiledStringToExecute = eventStringToExecute
-                            .replaceAll('$app', 'this.component') 
-                            .replaceAll('$event', 'this.$event')
-                            .replaceAll('$hooks', 'this.hooks')
+                        if(eventStringToExecute.includes('$event')) scope
 
-                        this.scopedEval(scope, transpiledStringToExecute)
+                        this.scopedEval(scope, eventStringToExecute)
                     } catch (error) {
-                        console.error(`Error ocurred while trying to transpile the app expression\nExpression: ${error}`)
-                        throw new Error(error)   
+                        console.error(`
+                            Error ocurred while trying to run the app expression
+                            Expression: "${eventStringToExecute}"
+                            Component: ${this.componentClassName}
+
+                            ${error.message}
+                        `)
                     }
                 })
 
@@ -62,7 +63,7 @@ export default class Component {
     }
 
     render() {        
-        const componentTemplate = this.componentTemplateFactory(this.hooks)
+        const componentTemplate = this.componentTemplateFactory(this.hooks, this.componentServices)
         
         this.componentDOM = new DOMParser().parseFromString(componentTemplate, 'text/html').body
 
@@ -79,54 +80,15 @@ export default class Component {
         })
     }
 
-    verifyBindMethods(stringToExecute) {
-        const componentMethodsNames = this.getAllComponentMethodsNames()
-
-        const eventMethods = stringToExecute.match(/([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\()/g)
-        let eventMethodArgs = []
-
-        if(eventMethods) {
-            eventMethods.forEach(eventMethodName => {
-                if(!componentMethodsNames.includes(eventMethodName)) throw new Error(`Bind method "${eventMethodName}" does not exist on component: ${EntrancesListPagethis.name}`)
-                
-                eventMethodArgs = /\(\s*([^)]+?)\s*\)/.exec(eventMethods);
-    
-                if (eventMethodArgs[1]) {
-                    eventMethodArgs = eventMethodArgs[1].split(/\s*,\s*/)
-                }
-            })
-            
-
-            //const formattedMethodsList = 
-
-            return {
-                eventMethods: eventMethods ? eventMethods : [],
-                eventMethodArgs
-            }
-        }
-
-        return {eventMethods: []}
-    }
-
-    formatComponentInputBinds() {
-
-    }
-
-    getAllComponentMethodsNames() {
-        const props = []
-
-        let obj = this.componentInstance
-
-        do {
-            props.push(...Object.getOwnPropertyNames(obj))
-        } while (obj = Object.getPrototypeOf(obj))
-        
-        return props.sort().filter((e, i, arr) => { 
-           if (e != arr[i+1] && typeof this.componentInstance[e] == 'function') return true
-        })
-    }
-
     scopedEval(scope, script) {
-        return Function(`"use strict"; ${script}`).bind(scope)()
+        return Function(`
+            "use strict";
+
+            const $app = this.$app;
+            const $hooks = this.$hooks;
+            const $event = this.$event; 
+
+            ${script}
+        `).bind(scope)()
     }
 }

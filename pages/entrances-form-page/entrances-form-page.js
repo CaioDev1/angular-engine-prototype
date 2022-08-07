@@ -1,28 +1,39 @@
 import template from './entrances-form-page.template.js'
 import style from './entrances-form-page.style.js'
-import Component from '../../core/component.js'
+import AppComponent from '../../core/component.js'
 
 
 const COMPONENT_SELECTOR = 'entrances-form-page'
 
 const EntrancesFormPage = (injectedServices) => {
     class EntrancesFormPageComponent extends HTMLElement {
-        constructor(services=injectedServices) {
+        constructor({
+            Router,
+            Entrances,
+            Visitors,
+            Component
+        }=injectedServices) {
             super()
 
-            this.router = services.Router
-            this.entrances = services.Entrances
-            this.visitors = services.Visitors
+            this.Router = Router
+            this.Entrances = Entrances
+            this.Visitors = Visitors
 
-            new Component(this, template, style)
+            this.component = new AppComponent(
+                this, 
+                template, 
+                style, 
+                EntrancesFormPageComponent.name,
+                injectedServices,
+            )
 
-            this.entranceId = this.router.getRouteParams('entrance_id')
+            this.component.hooks.entranceId = this.Router.getRouteParams('entrance_id')
 
             const form = this.querySelector('form')
 
-            if(this.entranceId) {
-                const selectedEntrance = this.entrances.list.find(entrance => entrance.id == this.entranceId)
-                const entranceVisitor = this.visitors.list.find(visitor => {
+            if(this.component.hooks.entranceId) {
+                const selectedEntrance = this.Entrances.list.find(entrance => entrance.id == this.component.hooks.entranceId)
+                const entranceVisitor = this.Visitors.list.find(visitor => {
                     if(visitor.visitor_id == selectedEntrance.entrance_visitor_id) return true
                 })
 
@@ -35,7 +46,7 @@ const EntrancesFormPage = (injectedServices) => {
                 form.elements['entrance_reason'].value = selectedEntrance.entrance_reason
             }
     
-            services.Component.instances[EntrancesFormPageComponent.name] = this
+            Component.instances[EntrancesFormPageComponent.name] = this
         }
 
         save(event) {
@@ -63,24 +74,24 @@ const EntrancesFormPage = (injectedServices) => {
                 entrance_end_prevision: new Date().setDate(new Date().getDate() + 1).toString(),
             }
 
-            if(!this.entranceId) {
-                this.visitors.add(newVisitorData)
+            if(!this.component.hooks.entranceId) {
+                this.Visitors.add(newVisitorData)
 
-                this.entrances.add(newEntranceData)
+                this.Entrances.add(newEntranceData)
             } else {
-                this.entrances.list = this.entrances.list.map(entrance => {
-                    if(entrance.id == this.entranceId) {
+                this.Entrances.list = this.Entrances.list.map(entrance => {
+                    if(entrance.id == this.component.hooks.entranceId) {
                         entrance = newEntranceData
 
-                        this.visitors.list = this.visitors.list.map(visitor => {
-                            if(visitor.visitor_id == entrande.entrance_visitor_id)
+                        this.Visitors.list = this.Visitors.list.map(visitor => {
+                            if(visitor.visitor_id == entrance.entrance_visitor_id)
                                 visitor = newVisitorData
                         })
                     }
                 }) 
             }
 
-            this.router.navigateTo('/')
+            this.Router.navigateTo('/')
         }
     }
 
